@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [ main, master ]
 jobs:
-  test:
+  regression-tests:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -17,11 +17,32 @@ jobs:
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test TestCases/autotraderSearch.spec.ts TestCases/dropDown.spec.ts
+    - name: Run Regression tests
+      run: npx playwright test -g "@regression"
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
-        name: playwright-report
+        name: regression-report
+        path: playwright-report/
+        retention-days: 30
+
+  sanity-tests:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+    - name: Run Sanity tests
+      run: npx playwright test -g "@sanity"
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: sanity-report
         path: playwright-report/
         retention-days: 30
