@@ -60,6 +60,20 @@ await page.goto("https://testautomationpractice.blogspot.com/");
     for (let o of options) { 
         console.log(await o.innerText());
     }
+}),
+
+test("SelectValue5", {tag: ['@regression']}, async({page})=>{
+await page.goto("https://testautomationpractice.blogspot.com/");
+    const option = page.locator("#country option");
+    await page.waitForTimeout(6000);
+    const options = await option.all();
+
+    console.log(await options[1].innerText());
+
+    for (let o of options) { 
+        console.log(await o.innerText());
+    }
 })
+
 
 
